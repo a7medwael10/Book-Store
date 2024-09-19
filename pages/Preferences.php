@@ -1,19 +1,15 @@
-<?php include_once '../layouts/header.php' ?>
+<?php include_once '../layouts/header.php';
 
-
-
-<?php
-
-// Set and get preferred currency
+$currency = ' ';
 if (isset($_POST['currency'])) {
-    setcookie('currency', $_POST['currency'], time() + (86400 * 30), "/"); // 30 days
-    $currency = $_POST['currency'];
+    setcookie('currency', $_POST['currency'], time() + (86400 * 30), "/"); 
 } elseif (isset($_COOKIE['currency'])) {
     $currency = $_COOKIE['currency'];
 } else {
     $currency = 'USD'; 
 }
 ?>
+
 <div class="container my-3">
 <h2 style="padding : 20px">Your preferred currency is: <?=$currency?></h2>
     <form method="POST">
@@ -29,10 +25,6 @@ if (isset($_POST['currency'])) {
     </form>
 
 </div>
-
-
-
-
 
 
 

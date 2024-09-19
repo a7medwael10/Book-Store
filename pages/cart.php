@@ -1,28 +1,17 @@
-<?php include_once '../layouts/header.php';
+<?php
+
+use classes\Cart;
+include_once '../classes/Cart.php';
+include_once '../layouts/header.php';
 include_once '../functions.php';
 
-?>
-
-<?php
-session_start();
-
-// echo '<pre>';
-// var_dump($books);
-// echo '</pre>';
-// exit
-?>
-<?php if (empty($_SESSION['cart'])) 
-
-echo '<h2 style="padding : 20px">your Cart is empty</h2>';
+$cart = new Cart();
+$books = $cart->getCart();
 
 ?>
 
 
 <div class="container my-3 me-5 pb-5">
-<?php if (!empty($_SESSION['cart'])) :
-    $books = $_SESSION['cart'];
-    ?>
-
     <h2 style="padding : 20px">My Cart</h2>
     <table class="table table-striped">
         <thead>
@@ -34,9 +23,19 @@ echo '<h2 style="padding : 20px">your Cart is empty</h2>';
             </tr>
         </thead>
         <tbody>
+            <?php
+            if (empty($books)) {
+                echo '
+                <tr style="text-align: center" >
+                    <td colspan="4" style="text-align: center">your Cart is empty</td>
+                </tr>
+                ';
+            }
+
+            ?>
             <?php foreach ($books as $key => $book): ?>
                 <tr>
-                    <td class="cart-item"> <img src="<?= $book['imgPath'] ?>" class="card-img-top" alt="..."></td>
+                    <td class="cart-item"> <img src="<?= $book['img_path'] ?>" class="card-img-top" alt="..."></td>
                     <td><?= $book['title'] ?></td>
                     <td><?= $book['author'] ?></td>
                     <td><?= $book['price'] ?></td>
@@ -52,24 +51,17 @@ echo '<h2 style="padding : 20px">your Cart is empty</h2>';
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if (isset($_POST['remove'])) {
                     $removeIndex = $_POST['removeIndex'];
-                    if (isset($_SESSION['cart'][$removeIndex])) {
-                        unset($_SESSION['cart'][$removeIndex]);
-                        $_SESSION['cart'] = array_values($_SESSION['cart']);
-                    }
+                    $cart->removeBook($removeIndex);
                 }
             }
     ?>
     </table>
     <?php
-    endif;
     if (!empty($_SESSION['cart'])) {
-        $total = 0;
-        foreach ($books as $book) {
-            $total += $book['price'];
-        }
+        $total =$cart->getTotalPrice();
         $totalPrice = currencyValue($total,$_COOKIE['currency']);
 
-        echo "<h3>Total: ".$_COOKIE['currency']." $totalPrice</h3>";
+        echo "<h3>Total: ".$_COOKIE['currency']." "."$totalPrice</h3>";
         echo '<a href="bookDetails.php" class="btn btn-primary">purchase</a>';
     }
     ?>

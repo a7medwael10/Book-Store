@@ -2,6 +2,7 @@
 <?php include_once 'functions.php'?>
 
 <?php
+
     welcome();
 ?>
 

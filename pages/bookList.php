@@ -1,7 +1,13 @@
 <?php
+
+use classes\Book;
+use classes\Cart;
 include_once '../layouts/header.php';
-include_once './booksArray.php';
-session_start();
+include_once '../classes/Book.php';
+include_once '../classes/`Cart.php';
+
+$bookData = new Book();
+$books = $bookData->allBooks()
 ?>
 <h2 style="padding : 20px">Book List</h2>
 
@@ -11,7 +17,7 @@ session_start();
 
             <div class="card g-col-4" style="width: 18rem;">
                 <div class="card-img" style="height: 60%">
-                    <img src="<?= $book['imgPath'] ?>" class="card-img-top h-100" alt="...">
+                    <img src="<?= $book['img_path'] ?>" class="card-img-top h-100" alt="...">
                 </div>
                 <div class="card-body" style="height: 20%">
                     <h5 class="card-title"><?= $book['title'] ?></h5>
@@ -28,16 +34,10 @@ session_start();
 
         <?php
         endforeach;
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            if (isset($_POST['addCart'])) {
-                $book_id = $_POST['bookId'];
-                foreach ($books as $book) {
-                    if ($book['id'] == $book_id) {
-                        $_SESSION['cart'][] = $book;
-                        break;
-                    }
-                }
-            }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $cart = new Cart();
+            $selectedBook = $bookData->getBookById($_POST['bookId']);
+            $cart->addBook($selectedBook);
         }
 
         ?>
